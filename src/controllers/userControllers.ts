@@ -36,7 +36,11 @@ async function getProfile(req: Request, res: Response, next: NextFunction) {
 async function updateProfile(req: Request, res: Response, next: NextFunction) {
     try {
         const userId = (req as any).user.id;
-        const { description, avatar } = req.body;
+        const { description } = req.body;
+        let avatar: string | undefined = undefined;
+        if (req.file) {
+            avatar = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+        }
 
         if (!description && !avatar) {
             res.status(400).json({
@@ -50,6 +54,7 @@ async function updateProfile(req: Request, res: Response, next: NextFunction) {
         next(error)
     }
 }
+
 
 
 export { listUsers, getProfile, updateProfile }
